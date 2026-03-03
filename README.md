@@ -275,10 +275,9 @@ python manage.py test api
 # Production Improvements & Recommendations
 I'd add proper authentication. Every request would require a valid token (obtained via a secure login endpoint), tied to a user or hospital account. This would let me enforce who can submit claims (only authorized providers), who can view statuses like claims officer or a member, and block unauthorized access completely. Tokens would expire automatically, support refresh tokens, and I'd add role-based permissions.
 
-### CI/CD Pipeline – How I'd Improve It in Production
+# CI/CD Pipeline – How I'd Improve It in Production
 
 Currently there's no automated deployment process so when I get to a point of deployment and in production, I'd set up a full **CI/CD pipeline** using GitHub Actions.This way, new features, bug fixes, or fraud rule updates will go live safely.
----
 
 # Technology Stack
 
