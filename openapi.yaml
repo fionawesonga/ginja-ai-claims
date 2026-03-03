@@ -1,0 +1,128 @@
+openapi: 3.0.3
+info:
+  title: Ginja AI Claims Validation API
+  description: |
+    Simple API for submitting health claims and checking validation status
+    (fraud detection, eligibility, benefit limits).
+  version: 1.0.0
+  contact:
+    name: Fiona
+    email: fionawesonga@gmail.com
+
+servers:
+  - url: http://127.0.0.1:8000/api/
+    description: Local development server
+
+paths:
+  /claims/:
+    post:
+      summary: Submit a new claim
+      operationId: submitClaim
+      tags:
+        - claims
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - member_id
+                - provider_id
+                - diagnosis_code
+                - procedure_code
+                - claim_amount
+              properties:
+                member_id:
+                  type: string
+                  example: "M_API"
+                provider_id:
+                  type: string
+                  example: "H_PROVIDER"
+                diagnosis_code:
+                  type: string
+                  example: "D_API"
+                procedure_code:
+                  type: string
+                  example: "P_API"
+                claim_amount:
+                  type: number
+                  format: decimal
+                  example: 5000.00
+      responses:
+        '201':
+          description: Claim created and validated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  claim_id:
+                    type: string
+                  status:
+                    type: string
+                    enum: [APPROVED, PARTIAL, REJECTED]
+                  fraud_flag:
+                    type: boolean
+                  approved_amount:
+                    type: number
+                    format: decimal
+        '400':
+          description: Validation error
+        '404':
+          description: Member or procedure not found
+
+  /claims/{claim_id}/:
+    get:
+      summary: Get claim status and validation result
+      operationId: getClaimStatus
+      tags:
+        - claims
+      parameters:
+        - name: claim_id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "CABC123"
+      responses:
+        '200':
+          description: Claim status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  claim_id:
+                    type: string
+                  status:
+                    type: string
+                  fraud_flag:
+                    type: boolean
+                  approved_amount:
+                    type: number
+                    format: decimal
+        '404':
+          description: Claim not found
+
+  /:
+    get:
+      summary: API root information
+      operationId: apiRoot
+      tags:
+        - meta
+      responses:
+        '200':
+          description: Welcome message with endpoints
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  endpoints:
+                    type: object
+
+components:
+  schemas: {}
